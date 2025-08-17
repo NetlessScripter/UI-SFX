@@ -1,0 +1,434 @@
+local A = game.Players.LocalPlayer
+local B = A.Character or A.CharacterAdded:Wait()
+
+local E = A.PlayerGui.Bar.MagicHealth.Health
+E.Bar.Bar.Image = "rbxassetid://18511971561"
+E.Bar.Bar.ImageColor3 = Color3.new(1, 0, 0)
+E.Glow.Image = "rbxassetid://18512475689"
+A.PlayerGui.Bar.MagicHealth.TextLabel.Text = "?"
+
+local function morph()
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+    local LocalPlayer = Players.LocalPlayer
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+    char:ScaleTo(1.086)
+
+    local NewCharacter = game:GetObjects("rbxassetid://86510378855881")[1]
+    NewCharacter.Parent = workspace
+
+    for _, v in pairs(NewCharacter:GetChildren()) do
+        if v:IsA("Part") then
+            local targetPart = char:FindFirstChild(v.Name)
+            if targetPart then
+                v.Anchored = false
+                v.Massless = true
+                v.CanCollide = false
+                v.CanTouch = false
+                v.CanQuery = false
+                v.Parent = targetPart
+                local motor = Instance.new("Motor6D")
+                motor.Part0 = targetPart
+                motor.Part1 = v
+                motor.C0 = CFrame.new()
+                motor.C1 = CFrame.new()
+                motor.Name = "MorphMotor_" .. v.Name
+                motor.Parent = targetPart
+            end
+        end
+    end
+
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
+
+    local OldFistAnimations = {
+        "rbxassetid://10469493270",
+        "rbxassetid://10469630950",
+        "rbxassetid://10469639222",
+        "rbxassetid://10469643643"
+    }
+
+    local NewFistAnimations = {
+        "rbxassetid://13491635433",
+        "rbxassetid://13532600125",
+        "rbxassetid://17889461810",
+        "rbxassetid://13378708199"
+    }
+
+    local currentReplacement = nil
+
+    local function stopCurrentReplacement()
+        if currentReplacement and currentReplacement.IsPlaying then
+            currentReplacement:Stop()
+        end
+        currentReplacement = nil
+    end
+
+    if humanoid and animator then
+        humanoid.AnimationPlayed:Connect(function(animationTrack)
+            local animId = animationTrack.Animation.AnimationId
+            for i, oldId in ipairs(OldFistAnimations) do
+                if animId == oldId then
+                    animationTrack:Stop()
+                    stopCurrentReplacement()
+                    local newAnim = Instance.new("Animation")
+                    newAnim.AnimationId = NewFistAnimations[i]
+                    currentReplacement = animator:LoadAnimation(newAnim)
+                    currentReplacement:Play()
+                    break
+                end
+            end
+        end)
+    end
+
+    task.spawn(function()
+        local conn = RunService.RenderStepped:Connect(function()
+            for _, v in pairs(char:GetChildren()) do
+                if v:IsA("Part") then
+                    v.Transparency = 1
+                end
+            end
+        end)
+        repeat task.wait() until humanoid and humanoid.Health <= 0
+        conn:Disconnect()
+    end)
+
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("Accessory") or v.Name == "face" then
+            v:Destroy()
+        end
+    end
+end
+
+morph()
+
+local a,b,c,d = game:GetService("Players"),"rbxassetid://15955393872","Character","Humanoid"
+local e=a.LocalPlayer
+local f=e[c] or e.CharacterAdded:Wait()
+local g=f:WaitForChild(d)
+g.AnimationPlayed:Connect(function(h)
+    if h.Animation.AnimationId==b then
+        h:Stop()
+
+local function v725(v719) --[[ Line: 3833 ]]
+    -- upvalues: v480 (copy)
+    local l_orig_0 = v719.orig;
+    local l_dir_0 = v719.dir;
+    local v722 = RaycastParams.new();
+    v722.FilterDescendantsInstances = v719.Whitelist or v719.Ignore or v480;
+    if v719.Whitelist then
+        v722.FilterType = Enum.RaycastFilterType.Include;
+    else
+        v722.FilterType = Enum.RaycastFilterType.Exclude;
+    end;
+    if v719.Blockcast then
+        local v723 = workspace:Blockcast(l_orig_0, v719.Blockcast, l_dir_0, v722);
+        if v723 then
+            return v723.Instance, v723.Position, v723.Material, v723.Normal;
+        else
+            return;
+        end;
+    else
+        local v724 = workspace:Raycast(l_orig_0, l_dir_0, v722);
+        if v724 then
+            return v724.Instance, v724.Position, v724.Material, v724.Normal;
+        else
+            return;
+        end;
+    end;
+end;
+shared.ray = v725;
+
+shared.AnimEvent = function(v1) --[[ copy ]]--
+    local v2 = game.Players.LocalPlayer
+    local v3 = v2.Character or v2.CharacterAdded:Wait()
+    local v4 = v3:WaitForChild("Humanoid")
+    local v5 = v4:FindFirstChildOfClass("Animator") or Instance.new("Animator", v4)
+    for _, v6 in ipairs(v5:GetPlayingAnimationTracks()) do
+        v6:Stop()
+    end
+    local v7 = Instance.new("Animation")
+    v7.AnimationId = "rbxassetid://" .. tostring(v1.Anim)
+    local v8 = v5:LoadAnimation(v7)
+    v8:Play()
+    v8.TimePosition = v1.TimePos or 0
+    v8:AdjustSpeed(v1.Speed or 1)
+    return v8
+end
+
+--[[ REUSABLE IDENTIFIERS ]]--
+local function v787() --[[ Line: 4026 ]]
+        -- upvalues: v785 (ref), v783 (ref), v784 (ref), v782 (copy), v779 (copy), v786 (copy)
+        while v785 do
+            v783 = v783 + v784;
+            while v782 <= v783 do
+                v779(v786);
+                v783 = v783 - v782;
+                if not v785 then
+                    break;
+                end;
+            end;
+            v784 = game:GetService("RunService").RenderStepped:Wait();
+        end;
+    end;
+if not v781 then
+    task.spawn(v787);
+else
+    v787();
+end;
+shared.loop = v787;
+
+shared.SetCore = function(state)
+    for _, v in ipairs(Enum.CoreGuiType:GetEnumItems()) do
+        pcall(function()
+            StarterGui:SetCoreGuiEnabled(v, not state);
+        end);
+    end;
+    pcall(function()
+        StarterGui:SetCore("ResetButtonCallback", not state);
+    end);
+end;
+
+local v9 = game:service("CollectionService");
+local v10 = game:service("TweenService");
+local _ = game:GetService("PhysicsService");
+local v12 = nil;
+local v13 = {};
+local _ = {};
+local v15 = require(game.ReplicatedStorage.Info);
+local v16 = require(game.ReplicatedStorage.Util);
+local v17 = require(game.ReplicatedStorage.MeshFlipbooks);
+local l_Cutscenes_0 = game.ReplicatedStorage.Cutscenes;
+
+local function v321(v315) --[[ Line: 2178 ]]
+        -- upvalues: v9 (copy)
+        local l_Sound_0 = Instance.new("Sound");
+        l_Sound_0.SoundGroup = game:GetService("SoundService").Sounds;
+        v9:AddTag(l_Sound_0, "NewSound");
+        if v315.AddTo then
+            table.insert(v315.AddTo, l_Sound_0);
+            v315.AddTo = nil;
+        end;
+        local v317 = nil;
+        local v318 = nil;
+        v318 = l_Sound_0.Ended:Connect(function() --[[ Line: 2189 ]]
+            -- upvalues: l_Sound_0 (copy), v317 (ref), v318 (ref)
+            if l_Sound_0 then
+                l_Sound_0:Destroy();
+            end;
+            if v317 then
+                v317:Destroy();
+            end;
+            return v318:Disconnect();
+        end);
+        if not v315.RollOffMaxDistance then
+            v315.RollOffMaxDistance = 300;
+        end;
+        if v315.CFrame then
+            v317 = Instance.new("Attachment");
+            v317.Parent = workspace.Terrain;
+            v317.WorldCFrame = v315.CFrame;
+            v315.Parent = v317;
+        end;
+        v315.CFrame = nil;
+        for v319, v320 in pairs(v315) do
+            l_Sound_0[v319] = v320;
+        end;
+        return l_Sound_0, v317;
+end;
+shared.sfx = v321;
+
+local l_LocalPlayer_0 = game.Players.LocalPlayer;
+local v1101 = {};
+v1101.char = l_LocalPlayer_0.Character or l_LocalPlayer_0.CharacterAdded:Wait();
+v1101.Hit = v1101.char;
+v1101.hit = v1101.char;
+v1101.Character = v1101.char;
+v1101.Char = v1101.char;
+v1101.Target = v1101.char
+v1101.Root = v1101.char:WaitForChild("HumanoidRootPart");
+v1101.Part = v1101.Root;
+v1101.CFrame = v1101.Root.CFrame
+v1101.ogrootcfr = v1101.CFrame
+
+local l_Debris_0 = game:GetService("Debris");
+local l_TouchEnabled_0 = game:GetService("UserInputService").TouchEnabled;
+local l_LegacyReplication_0 = game.ReplicatedStorage.Resources.LegacyReplication;
+
+shared.resizeparticle = function(v848, v849, v850) --[[ Line: 4237 ]]
+    local v851 = v850 or "Size";
+    if v851 == "Speed" then
+        v848.Speed = NumberRange.new(v848.Speed.Min * v849, v848.Speed.Max * v849);
+        return;
+    else
+        for _, v853 in pairs({v848}) do
+            local v854 = {};
+            for _, v856 in pairs(v853[v851].Keypoints) do
+                table.insert(v854, NumberSequenceKeypoint.new(v856.Time, v856.Value * v849, v856.Envelope));
+            end;
+            v853[v851] = NumberSequence.new(v854);
+        end;
+        return;
+    end;
+end;
+
+local function v891(v857, v858) --[[ Line: 4246 ]]
+    if typeof(v857) == "Instance" then
+        v857 = v857:GetDescendants();
+    end;
+    if not v858 then
+        v858 = CFrame.new();
+    end;
+    local l_abs_0 = math.abs;
+    local v860 = 1e999;
+    local v861 = 1e999;
+    local v862 = 1e999;
+    local v863 = -1e999;
+    local v864 = -1e999;
+    local v865 = -1e999;
+    for _, v867 in pairs(v857) do
+        if v867:IsA("BasePart") then
+            local v868 = v858:ToObjectSpace(v867.CFrame);
+            local l_Size_0 = v867.Size;
+            local l_X_0 = l_Size_0.X;
+            local l_Y_1 = l_Size_0.Y;
+            local l_Z_0 = l_Size_0.Z;
+            local v873, v874, v875, v876, v877, v878, v879, v880, v881, v882, v883, v884 = v868:components();
+            local v885 = 0.5 * (l_abs_0(v876) * l_X_0 + l_abs_0(v877) * l_Y_1 + l_abs_0(v878) * l_Z_0);
+            local v886 = 0.5 * (l_abs_0(v879) * l_X_0 + l_abs_0(v880) * l_Y_1 + l_abs_0(v881) * l_Z_0);
+            local v887 = 0.5 * (l_abs_0(v882) * l_X_0 + l_abs_0(v883) * l_Y_1 + l_abs_0(v884) * l_Z_0);
+            if v873 - v885 < v860 then
+                v860 = v873 - v885;
+            end;
+            if v874 - v886 < v861 then
+                v861 = v874 - v886;
+            end;
+            if v875 - v887 < v862 then
+                v862 = v875 - v887;
+            end;
+            if v863 < v873 + v885 then
+                v863 = v873 + v885;
+            end;
+            if v864 < v874 + v886 then
+                v864 = v874 + v886;
+            end;
+            if v865 < v875 + v887 then
+                v865 = v875 + v887;
+            end;
+        end;
+    end;
+    local v888 = Vector3.new(v860, v861, v862);
+    local v889 = Vector3.new(v863, v864, v865);
+    local v890 = (v889 + v888) / 2;
+    return v858 - v858.p + v858:PointToWorldSpace(v890), v889 - v888;
+end;
+local function v1069(folder, outputTable, limit)
+    outputTable = outputTable or {};
+    limit = limit or #folder:GetChildren();
+    local count = 0;
+    for _, v4038 in ipairs(folder:GetChildren()) do
+        table.insert(outputTable, v4038);
+        count = count + 1;
+        if count >= limit then
+            break;
+        end;
+    end;
+    return outputTable;
+end;
+
+local v23905 = require(game.ReplicatedStorage.library);
+                    local l_PlayAttachment_0 = v23905.PlayAttachment;
+                    local l_Maid_14 = v23905.Maid;
+                    local _ = v23905.PlayTween;
+                    local _ = v23905.CamShake;
+                    local _ = v23905.PlayFlipBook;
+                    local l_dtwait_0 = v23905.dtwait;
+                    local _ = v23905.EFP;
+                    local l_PlayMesh_0 = v23905.PlayMesh;
+                    local _ = v23905.Impact;
+                    local _ = v23905.GlassLight;
+                    local _ = v23905.RaiseZIndex;
+                    local _ = v23905.Able;
+                    local l_LifeScale_0 = v23905.LifeScale;
+                    local l_QuickFX_0 = v23905.QuickFX;
+                    local _ = v23905.QuickWeld;
+                    local _ = v23905.Yield;
+                    local _ = v23905.ProcessPart;
+                    local _ = v23905.WeldObject;
+                    local _ = v23905.Bezier;
+
+local v24392 = require(game.ReplicatedStorage.Utility);
+                    local l_MonsterWall_0 = game.ReplicatedStorage.Resources.MonsterWall;
+                    local l_Character_55 = v1101.Character;
+                    local l_HumanoidRootPart_18 = l_Character_55:FindFirstChild("HumanoidRootPart");
+                    local function v24400(v24396) --[[ Line: 52246 ]]
+                        if v24396:IsA("Model") then
+                            v24396 = v24396.PrimaryPart;
+                        end;
+                        
+                        if v24397 then
+                            for _, v24399 in pairs(v24396:GetDescendants()) do
+                                if v24399:IsA("ParticleEmitter") and v24399.Texture == "rbxassetid://7216851093" then
+                                    v24399.Color = ColorSequence.new(v24397.Color);
+                                    v24399:SetAttribute("EmitCount", v24399:GetAttribute("EmitCount") or 2.4242424242424243);
+                                end;
+                            end;
+                        end;
+                    end;
+                    local l_l_MonsterWall_0_0 = l_MonsterWall_0 --[[ copy: 5 -> 627 ]];
+                    local l_l_Character_55_0 = l_Character_55 --[[ copy: 6 -> 628 ]];
+                    local l_v24400_0 = v24400 --[[ copy: 8 -> 629 ]];
+                    local l_v24392_0 = v24392 --[[ copy: 4 -> 630 ]];
+                    task.delay(0.217, function() --[[ Line: 52265 ]]
+                        -- upvalues: l_l_MonsterWall_0_0 (copy), l_l_Character_55_0 (copy), l_v24400_0 (copy), l_v24392_0 (copy)
+                        local v24405 = l_l_MonsterWall_0_0.FirstSlamFX:Clone();
+                        v24405.Parent = workspace.Thrown;
+                        v24405:PivotTo(l_l_Character_55_0.PrimaryPart.CFrame);
+                        l_v24400_0(v24405);
+                        l_v24392_0.Debris(v24405, 4);
+                        l_v24392_0.Emit(v24405);
+                        l_v24392_0.vfxTween(v24405.Wind1, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24405.Wind2, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24405.Ring, TweenInfo.new(0.3, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24405.Ring2, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out));
+                    end);
+                    local l_l_HumanoidRootPart_18_0 = l_HumanoidRootPart_18 --[[ copy: 7 -> 631 ]];
+                    task.delay(0.85, function() --[[ Line: 52283 ]]
+                        -- upvalues: l_l_MonsterWall_0_0 (copy), l_v24400_0 (copy), l_v24392_0 (copy), l_l_HumanoidRootPart_18_0 (copy)
+                        local v24407 = l_l_MonsterWall_0_0.SecondSlamFX:Clone();
+                        v24407.Parent = workspace.Thrown;
+                        l_v24400_0(v24407);
+                        l_v24392_0.Debris(v24407, 4);
+                        l_v24392_0.Emit(v24407);
+                        l_v24392_0.vfxTween(v24407.Ring, TweenInfo.new(0.3, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24407.Ring2, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out));
+                        v24407:PivotTo(l_l_HumanoidRootPart_18_0.CFrame);
+                    end);
+                    task.delay(1.267, function() --[[ Line: 52297 ]]
+                        -- upvalues: l_l_MonsterWall_0_0 (copy), l_l_HumanoidRootPart_18_0 (copy), l_v24400_0 (copy), l_v24392_0 (copy)
+                        local v24408 = l_l_MonsterWall_0_0.Hits:Clone();
+                        v24408.Parent = workspace.Thrown;
+                        v24408.CFrame = l_l_HumanoidRootPart_18_0.CFrame;
+                        l_v24400_0(v24408);
+                        l_v24392_0.Debris(v24408, 2);
+                        l_v24392_0.Emit(v24408);
+                    end);
+                    task.delay(2.317, function() --[[ Line: 52307 ]]
+                        -- upvalues: l_l_MonsterWall_0_0 (copy), l_l_HumanoidRootPart_18_0 (copy), l_v24400_0 (copy), l_v24392_0 (copy)
+                        local v24409 = l_l_MonsterWall_0_0.FinalSlamFX:Clone();
+                        v24409.Parent = workspace.Thrown;
+                        v24409:PivotTo(l_l_HumanoidRootPart_18_0.CFrame);
+                        l_v24400_0(v24409);
+                        l_v24392_0.Emit(v24409);
+                        l_v24392_0.Debris(v24409, 4);
+                        l_v24392_0.vfxTween(v24409.Wind1, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24409.Wind2, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24409.WindDecal, TweenInfo.new(0.85, Enum.EasingStyle.Quart, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24409.Shockwave, TweenInfo.new(0.25, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24409.Shockwave2, TweenInfo.new(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24409.Ring1, TweenInfo.new(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.Out));
+                        l_v24392_0.vfxTween(v24409.Ring2, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out));
+                    end);
+    end
+end)

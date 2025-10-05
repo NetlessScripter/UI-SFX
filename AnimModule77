@@ -12,9 +12,7 @@ local animCache = {}
 local function loadKeyframeSequence(idOrInstance)
 	if typeof(idOrInstance) == "Instance" then
 		if idOrInstance:IsA("KeyframeSequence") then return idOrInstance end
-		if idOrInstance:IsA("ObjectValue") and idOrInstance.Value and idOrInstance.Value:IsA("KeyframeSequence") then
-			return idOrInstance.Value
-		end
+		if idOrInstance:IsA("ObjectValue") and idOrInstance.Value and idOrInstance.Value:IsA("KeyframeSequence") then return idOrInstance.Value end
 		local k = idOrInstance:FindFirstChildOfClass("KeyframeSequence")
 		if k then return k end
 		for _, folderName in ipairs({"AnimSaves","Animations"}) do
@@ -127,20 +125,30 @@ function AnimPlayer:Play(speed, looped)
 		if not self.Playing then return end
 		timePos = timePos + dt*self.Speed
 
-		-- advance frame index based on original times
+		-- advance index
 		while currentIndex < frameCount and timePos >= anim[currentIndex+1].Time do
 			currentIndex = currentIndex + 1
 		end
 
 		local prevFrame = anim[currentIndex]
-		local nextFrame = (currentIndex < frameCount) and anim[currentIndex+1] or (self.Looped and anim[1] or anim[frameCount])
-		local alpha = 0
-		if nextFrame.Time ~= prevFrame.Time then
-			if currentIndex == frameCount and self.Looped then
-				alpha = (timePos - prevFrame.Time)/(self.Length - prevFrame.Time)
+		local nextFrame
+		if currentIndex == frameCount then
+			if self.Looped then
+				nextFrame = anim[1]
 			else
-				alpha = (timePos - prevFrame.Time)/(nextFrame.Time - prevFrame.Time)
+				nextFrame = prevFrame
 			end
+		else
+			nextFrame = anim[currentIndex+1]
+		end
+
+		local alpha
+		if nextFrame == prevFrame then
+			alpha = 0
+		elseif currentIndex == frameCount and self.Looped then
+			alpha = (timePos - prevFrame.Time)/(self.Length - prevFrame.Time)
+		else
+			alpha = (timePos - prevFrame.Time)/(nextFrame.Time - prevFrame.Time)
 		end
 
 		for jointName, prevData in pairs(prevFrame.Data) do
@@ -151,7 +159,7 @@ function AnimPlayer:Play(speed, looped)
 			end
 		end
 
-		-- handle looping
+		-- loop or stop
 		if timePos >= self.Length then
 			if self.Looped then
 				timePos = timePos - self.Length
